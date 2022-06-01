@@ -1,3 +1,4 @@
+import re
 import sys
 import csv
 import json
@@ -8,7 +9,7 @@ user = object    #global testing object for user
 
 class Book:
 
-    def __init__(self, author, country, imageLink, language, link, pages, title, isbn, year) -> None:
+    def __init__(self, author, country, imageLink, language, link, pages, title, isbn, year):
         self.Author = author
         self.Country = country
         self.ImageLink = imageLink
@@ -29,9 +30,17 @@ class Catalog:
         for book in self.List_of_books:
             print(book.Title)
 
-    def Search():
-        pass
-
+    def Search(self, req):
+        count = 0
+        for book in self.List_of_books:
+            if(req in book.Title or req.capitalize() in book.Title) :
+                print(book.Author + " - " + book.Title)
+                count += 1
+            elif(req in book.Author or req.capitalize() in book.Author):
+                print(book.Author + " - " + book.Title)
+                count += 1
+        if(count == 0): 
+            print("no books found.")
 
 
 
@@ -63,16 +72,14 @@ class Library:
         pass
     
     def list_members(self):
-        return self.List_of_members
+        for member in self.List_of_members:
+            print(member) 
 
     def add_members():
         pass
 
     def delete_members():
         pass
-
-
-
 
 
 
@@ -198,7 +205,7 @@ def main(screen = 0): # Main function is for the start of the program
 
     def Back(n):      #simple back function
         print("")
-        b = input("Press 1 to go back")    
+        b = input("Enter 1 to go back: ")    
         if(b == "1"):    
             clear()
             return main(n)
@@ -228,13 +235,14 @@ def main(screen = 0): # Main function is for the start of the program
             else:
                 print("Please enter correct number.")
 
-    if screen == 1: #Member screen
+    if screen == 1: #Member main screen
         choice = 0
         print(""" ======PUBLIC LIBRARY=======""")
         user.display_Message()
         print("[1] Check catalog")
         print("[2] Search book")
         print("[3] Return book")
+        print("[4] Log out")
         try:
             choice = int(input("Please enter choice: "))
         except:
@@ -248,18 +256,37 @@ def main(screen = 0): # Main function is for the start of the program
             library_obj.list_books()
             Back(1)
 
-        elif choice == 2:
+        elif choice == 2: ## search book option screen ##
             clear()
-            print("WIP")
+            print(""" ======PUBLIC LIBRARY=======""")
+            req = input("Please enter a Title or author: ")
+            if(req != ""):
+                library_obj.Catalog_obj.Search(req)
+                Back(1)
+          
 
         elif choice == 3:
             clear()
             print("WIP")
+            main(1)
+        
+        elif choice == 4:
+            clear()
+            return main()
 
-    if screen == 5: #Admin screen
+        else:
+            print("please enter correct number")
+            main(1)
+
+
+
+    if screen == 5: #Admin main screen
         print(""" ======PUBLIC LIBRARY=======""") 
         user.display_Message()
-        print("[1] View Members")
+        print("[1] Book options")
+        print("[2] Member options")
+        print("[3] System options")
+        print("[4] Log out")
         try:
             choice = int(input("Please enter choice: "))
         except:
@@ -267,14 +294,160 @@ def main(screen = 0): # Main function is for the start of the program
             print("Numbers only")
             main(5)
 
+        if choice == 1: 
+            clear()
+            main(6)
+        elif choice == 2: 
+            clear()
+            main(7)
+        elif choice == 3:
+            clear()
+            main(8)
+        elif choice == 4:
+            clear()
+            main()
+        else:
+            clear()
+            print("Please enter correct number")
+            main(5)
+    
+
+    if screen == 6: #Admin book menu screen
+        print(""" ======PUBLIC LIBRARY=======""") 
+        print("[1] View catalog")
+        print("[2] Search book")
+        print("[3] Add book(s)")
+        print("[4] Edit book")
+        print("[5] delete book")
+        print("[6] Back")
+        try:
+            choice = int(input("Please enter choice: "))
+        except:
+            clear()
+            print("Numbers only")
+            main(6)
+        
         if choice == 1:
             clear()
             print(""" ======PUBLIC LIBRARY=======""")
-            user.display_Members()
-            Back(5)
-        else:
-            print("WIP")
+            library_obj.list_books()
+            Back(6)
 
+        elif choice == 2:
+            clear()
+            print(""" ======PUBLIC LIBRARY=======""")
+            req = input("Please enter a Title or author: ")
+            if(req != ""):
+                library_obj.Catalog_obj.Search(req)
+                Back(6)
+        
+        elif choice == 3:
+            clear()
+            print(""" ======PUBLIC LIBRARY=======""")
+            print("Wip")
+            Back(6)
+        
+        elif choice == 4:
+            clear()
+            print(""" ======PUBLIC LIBRARY=======""")
+            print("Wip")
+            Back(6)
+
+        elif choice == 5:
+            clear()
+            print(""" ======PUBLIC LIBRARY=======""")
+            print("Wip")
+            Back(6)
+        
+        elif choice == 6:
+            clear()
+            main(5)
+        
+        else:
+            clear()
+            print("Please enter correct number")
+            main(6)
+            
+
+    if screen == 7: #Admin member menu screen
+        print(""" ======PUBLIC LIBRARY=======""") 
+        print("[1] View Members")
+        print("[2] Add Member(s)")
+        print("[3] Edit Member")
+        print("[4] Delete Member")
+        print("[5] Back")
+        try:
+            choice = int(input("Please enter choice: "))
+        except:
+            clear()
+            print("Numbers only")
+            main(7)
+        
+        if choice == 1:
+            clear()
+            print(""" ======PUBLIC LIBRARY=======""")
+            library_obj.list_members()
+            Back(7)
+
+        elif choice == 2:
+            clear()
+            print(""" ======PUBLIC LIBRARY=======""")
+            print("Wip")
+            Back(7)
+        
+        elif choice == 3:
+            clear()
+            print(""" ======PUBLIC LIBRARY=======""")
+            print("Wip")
+            Back(7)
+        
+        elif choice == 4:
+            clear()
+            print(""" ======PUBLIC LIBRARY=======""")
+            print("Wip")
+            Back(7)
+
+        elif choice == 5:
+            clear()
+            main(5)
+        
+        else:
+            clear()
+            print("Please enter correct number")
+            main(7)
+
+    if screen == 8: #Admin system menu screen 
+        print(""" ======PUBLIC LIBRARY=======""")
+        print("[1] Make back-up")
+        print("[2] Restore back-up")
+        print("[3] Back")
+        try:
+            choice = int(input("Please enter choice: "))
+        except:
+            clear()
+            print("Numbers only")
+            main(8)
+        
+        if choice == 1:
+            clear()
+            print(""" ======PUBLIC LIBRARY=======""")
+            print("Wip")
+            Back(8)
+        
+        elif choice == 2:
+            clear()
+            print(""" ======PUBLIC LIBRARY=======""")
+            print("Wip")
+            Back(8)
+        
+        elif choice == 3:
+            clear()
+            main(5)
+
+        else:
+            clear()
+            print("Please enter correct number")
+            main(8)
 
 main()
 

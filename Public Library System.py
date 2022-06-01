@@ -82,65 +82,37 @@ class Library:
         pass
 
 
-
-
-def load_library(): # Function for object library
-    list_of_books = []
-    member_list = []
-    bookitemlist = []
-    try:
-        with open("Books.json") as f:
-            book_data = json.load(f)
-            for i in book_data:
-                list_of_books.append(Book(i["author"], i["country"], i["imageLink"], i["language"], i["link"], i["pages"], i["title"], i["ISBN"], i["year"]))
-    except:
-        print("Error: Books.json not found.")
-    try:
-        with open("Members.csv", mode = "r") as f:
-                    reader = csv.reader(f, delimiter = ";")
-                    for row in reader:
-                        member_list.append(row[7])
-    except:
-        print("Error: Members.csv not found.")
-    return Library(list_of_books, member_list)
-
-
-library_obj = load_library() #Library object
-
-
-
 class Person:
 
-    def __init__(self, username, password, data):
+    #;GivenName;Surname;StreetAddress;ZipCode;City;EmailAddress;Username;Password;TelephoneNumber
 
-        self.username = username
-        self.password = password
-        self.ID = data[0]
-        self.name = data[1]
-        self.surname = data[2]
-        self.street_address = data[3]
-        self.zip_code = data[4]
-        self.city = data[5]
-        self.email = data[6]
+    def __init__(self, id, name, surname, address, zipCode, city, email, username, password, telephoneNumber):
+
+        self.Id = id
+        self.Name= name
+        self.Surname = surname
+        self.Adress = address
+        self.ZipCode = zipCode
+        self.City = city
+        self.Email = email
+        self.Username = username
+        self.Password = password
+        self.TelephoneNumber = telephoneNumber
 
     def display(self):
-        print(f"Account of {self.username}")
+        print(f"Account of {self.Username}")
  
 
 
 class Member(Person):
-    def __intit__(self, data):
-        super().__init__(self, username, password, data)
-        #self.borrowedbook = ?
+    def __intit__(self):
+        super().__init__(self)
+        self.borrowedbooks = []
 
     
     def display_Message(self):
-        print(f"Welcome {self.username}")
-    
-  
-         
+        print(f"Welcome {self.Username}")
         
-
 
 class LibaryAdmin(Person):
     def __init__(self, username, password):
@@ -157,8 +129,32 @@ class LibaryAdmin(Person):
 
 
 
+def load_library(): # Function for object library
+    list_of_books = []
+    member_list = []
+    bookitemlist = []
     
+    try:
+        with open("Books.json") as f:
+            book_data = json.load(f)
+            for i in book_data:
+                list_of_books.append(Book(i["author"], i["country"], i["imageLink"], i["language"], i["link"], i["pages"], i["title"], i["ISBN"], i["year"]))
+    except:
+        print("Error: Books.json not found.")
 
+    try:
+        with open("Members.csv", mode = "r") as f:
+                    reader = csv.reader(f, delimiter = ";")
+                    for row in reader:
+                        member_list.append(Member(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9]))
+                        
+    except:
+        print("Error: Members.csv not found.")
+
+    return Library(list_of_books, member_list)
+
+
+library_obj = load_library() #Library object
 
 
 def Login():
@@ -177,16 +173,13 @@ def Login():
         user = LibaryAdmin(username, password)
         clear()
         return main(5)
-    else:
-        with open("Members.csv", mode = "r") as f:
-                reader = csv.reader(f, delimiter = ";")
-                for row in reader:
-                    if username == row[7] and password== row[8]:
-                        login_bool = True
-                        data += row
+
+    for member in library_obj.List_of_members:
+        if(username == member.Username and password == member.Password):
+            user = member
+            login_bool = True
                 
     if login_bool == True:
-        user = Member(username, password, data)
         clear()
         return main(1)
     else:
@@ -214,26 +207,25 @@ def main(screen = 0): # Main function is for the start of the program
 
 
     if screen == 0: #login screen
-        login = False
-        while login == False:
-            choice = 0
-            print(""" ======PUBLIC LIBRARY=======""")
-            print("[1] Login")
-            print("[2] Exit")
-            print(" ")
-            try:
-                choice = int(input("Please enter choice: "))
-            except:
-                clear()
-                print("Numbers only.")
+        choice = 0
+        print(""" ======PUBLIC LIBRARY=======""")
+        print("[1] Login")
+        print("[2] Exit")
+        try:
+            choice = int(input("Please enter choice: "))
+        except:
+            clear()
+            print("Numbers only.")
 
-            if choice == 1:
-                clear()
-                return Login()
-            elif choice == 2:
-                sys.exit()
-            else:
-                print("Please enter correct number.")
+        if choice == 1:
+            clear() 
+            return Login()
+
+        elif choice == 2:
+            sys.exit()
+
+        else:
+            print("Please enter correct number.")
 
     if screen == 1: #Member main screen
         choice = 0

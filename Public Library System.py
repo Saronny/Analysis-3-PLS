@@ -1,8 +1,9 @@
-import re
+import datetime
 import sys
 import csv
 import json
 import os
+from datetime import date
 
 clear = lambda: os.system('cls') # a lambda for clearing the console
 user = object    #global testing object for user 
@@ -19,6 +20,26 @@ class Book:
         self.Title = title
         self.Isbn = isbn
         self.Year = year
+
+
+class BookItem(Book): #BookItem class inherits from Book class 
+
+    def __init__(self, author, country, imageLink, language, link, pages, title, isbn, year):
+        super().__init__(author, country, imageLink, language, link, pages, title, isbn, year)
+        self.lent = False
+    
+class LoanItem(BookItem): #loan item class inherits from bookItem class 
+
+    date = datetime.datetime.now()
+    return_date = date + datetime.timedelta(days=30)
+
+    def __init__(self, author, country, imageLink, language, link, pages, title, isbn, year):
+        super().__init__(author, country, imageLink, language, link, pages, title, isbn, year)
+        self.BorrowedBy = object
+        self.DateLent = date.strftime("%d%m%Y")
+        self.ReturnTime = date.strftime("%d%m%Y")
+
+    
 
 class Catalog: 
 
@@ -204,7 +225,6 @@ def main(screen = 0): # Main function is for the start of the program
             return main(n)
         else:
             Back(n)
-
 
     if screen == 0: #login screen
         choice = 0
